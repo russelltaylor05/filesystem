@@ -1,0 +1,17 @@
+~pn-cs453/Given/Asgn4/Images/
+
+total 72133
+drwxr-xr-x 2 pn-cs453 users       14 Nov 15 10:59 .
+drwxr-xr-x 5 pn-cs453 users        5 Nov 15 12:06 ..
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 BigDirectories
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 BigIndirectDirs
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 BigZones-16k
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 BlankDisk
+-r--r--r-- 1 pn-cs453 users 10485760 Nov 15 10:59 Files
+-r--r--r-- 1 pn-cs453 users 49090560 Nov  2 05:44 HardDisk
+-r--r--r-- 1 pn-cs453 users     2245 Nov 15 10:59 Notes
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 Partitioned
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 RandomDisk
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 ReallyBigZones-64k
+-r--r--r-- 1 pn-cs453 users  1474560 Nov 15 10:59 SmallBlocks--1k
+-r--r--r-- 1 pn-cs453 users  1474560 Nov  2 05:44 TestImage

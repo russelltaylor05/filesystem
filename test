@@ -1,0 +1,6 @@
+make clean
+make
+echo "-----------------------"
+echo "Program Starting"
+echo "-----------------------"
+minls ~pn-cs453/Given/Asgn4/Images/$1 $2

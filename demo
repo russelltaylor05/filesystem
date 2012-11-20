@@ -1,0 +1,3 @@
+echo "given/minls -v ~pn-cs453/Given/Asgn4/Images/$1"
+echo ""
+given/minls -v ~pn-cs453/Given/Asgn4/Images/$1
