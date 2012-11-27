@@ -51,13 +51,7 @@ typedef struct inode
   uint32_t ctime;
 
   /* Zones */
-  uint32_t zone0;
-  uint32_t zone1;
-  uint32_t zone2;
-  uint32_t zone3;
-  uint32_t zone4;
-  uint32_t zone5;
-  uint32_t zone6;
+  uint32_t zone[7];
   uint32_t zoneindirect;
   uint32_t zonedouble;  
   uint32_t unused;  
@@ -71,6 +65,9 @@ void getNode(INODE *node, FILE *fp, SUPERBLOCK *disk, int number);
 void printNode(INODE *node);
 
 void printMode(uint16_t mode);
+void printItem(INODE *node, char *name);
+void printUsage();
+
 
 void print_bits(uint32_t number);
 #endif

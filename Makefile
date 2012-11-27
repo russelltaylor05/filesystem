@@ -37,5 +37,5 @@ allclean: clean
 	@rm -f $(EXTRACLEAN)
 
 clean:	
-	rm -f  *.o *~ TAGS minls minget
+	rm -f  *.o *~ TAGS minls minget output/*.out
 

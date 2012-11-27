@@ -7,7 +7,10 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <unistd.h>
 #include "min.h"
+#include "argp.h"
+
 
 #define MAXSNAKES  100
 #define INITIALSTACK 2048
@@ -16,136 +19,162 @@ int main(int argc, char *argv[])
 {
 
   FILE * file;
-  size_t result;
-  uint32_t *data;
+  //size_t result;
   uint32_t *ibitmap;
   uint32_t *zbitmap;
-  int i, zone;
+  int i, j, partFound, indirectCount, indirectNode;
+  int zoneCount = 0;
   //int argError = 0;
-  int verboseFlag = 0;
-  char size[20];
 
-  char *imagePath, *startLoc;
 
   SUPERBLOCK *diskinfo;
   INODE *node, *tempNode;
   DIRECT *direct;
+  ARGSP *argsp;
   
   diskinfo = malloc(sizeof(SUPERBLOCK));
   node = malloc(sizeof(INODE));
   tempNode = malloc(sizeof(INODE));
   direct = malloc(sizeof(DIRECT));
+  argsp = malloc(sizeof(ARGSP));
 
-  for(i = 1; i < argc; i++) {
-    if(strcmp(*(argv+i), "-v") == 0) {
-      verboseFlag = 1;    
-    } else if (*(argv+i)[0] != '-') {
-      imagePath = *(argv+i);
-      if(i + 1 != argc) {
-        startLoc = *(argv+i+1);
-        i++;
-      } else {
-        asprintf(&startLoc, "/");
-      }
-    }
-  }  
-  //printf("iamge: %s\n", imagePath);
-  printf("startLoc: %s\n\n", startLoc);
- 
-  file = fopen(imagePath, "r");
+  ibitmap = malloc(diskinfo->blocksize);
+  zbitmap = malloc(diskinfo->blocksize);
+
+  getArgs(argsp, argc, argv);
+
+  if(argsp->hflag) {
+    printUsage();
+    return OK;
+  }
+   
+  file = fopen(argsp->image, "r");
   if (file==NULL) {fputs ("File error",stderr); exit (1);}
 
   /* Super Block */
-  fseek(file, 1024, SEEK_SET);
   getSuperBlock(diskinfo, file);
   
-  if(verboseFlag) {
-    printSuperBlock(diskinfo);
-    printf("\n");
+  /* grab root/first node */
+  getNode(node, file, diskinfo, 1);
+
+  
+  /* Traverse pathParts */  
+  for(i = 0; i < argsp->partsCount; i++) {
+    
+    partFound = 0;
+    indirectCount = 0;
+    /* set back to zone[0] for new node */
+    zoneCount = 0;
+    fseek(file, diskinfo->blocksize * node->zone[zoneCount], SEEK_SET);
+    
+    /* Here we look through each directory entry */
+    for(j= 0; j < node->size / sizeof(DIRECT); j++) {
+      fread(direct, sizeof(DIRECT), 1, file); 
+  
+      if(!strcmp(argsp->pathParts[i], direct->name) && direct->inode != 0) {        
+        getNode(node, file, diskinfo, direct->inode);
+        partFound = 1;
+      }
+
+      /* check to see if we are at the end of a block and need to move to next zone*/
+      if(((j+1) * sizeof(DIRECT) % diskinfo->blocksize) == 0) {
+        if (zoneCount < 6) {
+          zoneCount++;
+          fseek(file, diskinfo->blocksize * node->zone[zoneCount], SEEK_SET);
+        } else {
+          /* jump to indirect block plus offset */
+          fseek(file, diskinfo->blocksize * node->zoneindirect + (sizeof(uint32_t) * indirectCount), SEEK_SET);
+          indirectCount++;
+          
+          /* grab new zone value */
+          fread(&indirectNode, sizeof(uint32_t), 1, file);           
+          
+          /* set filepointer to new indirect zone */
+          fseek(file, diskinfo->blocksize * indirectNode, SEEK_SET);
+        }
+      }
+    }
+
+    /* if any part of path not found throw error */
+    if(!partFound) {
+      printf("%s: File not found.\n", argsp->path);
+      exit(0);
+    } 
+  }
+  
+  /*
+  fseek(file, diskinfo->blocksize * 32, SEEK_SET);
+  for(i = 0; i < 10; i++) {
+    fread(direct, sizeof(DIRECT), 1, file);
+    printf("node: %d \t name: %s\n", direct->inode, direct->name);
   }
 
-  /* iNode */
-  getNode(node, file, diskinfo, 1);
-  if(verboseFlag) {  
+  fseek(file, diskinfo->blocksize * 28, SEEK_SET);
+  for(i = 0; i < 10; i++) {
+    fread(&nodes, sizeof(uint32_t), 1, file);
+    printf("node: %d \n", nodes);
+  } 
+  */ 
+  
+  
+  /* Output */  
+  if(argsp->vflag) {  
+    printSuperBlock(diskinfo);
+    printf("\n");
     printNode(node);
     printf("\n");
   }  
-
-  /* Inode bitmap */
-  ibitmap = malloc(diskinfo->blocksize);
-  /*
-  printf("iNode bitmap\n");
-  fseek(file, diskinfo->blocksize * 2, SEEK_SET);
-  fread(ibitmap, diskinfo->blocksize, 1, file);
-  for(i=0; i < 10; i++) {
-    print_bits(ibitmap[i]);
-  }  
-  printf("\n");
-  */
-
-
-  /* Zone bitmap */
-  zbitmap = malloc(diskinfo->blocksize);
-  /*
-  printf("Zone bitmap\n");  
-  fseek(file, diskinfo->blocksize * 3, SEEK_SET);
-  fread(zbitmap, diskinfo->blocksize, 1, file);
-  for(i=0; i < 10; i++) {
-    print_bits(zbitmap[i]);
-  }  
-  printf("\n");
-  */
-    
-
   
+  zoneCount = 0;
+  indirectCount = 0;  
+  
+  /* current node will be the matching diretory or file */
   if((node->mode & FILEMASK & DIRECTORYMASK)) {
 
-    zone = node->zone0;
-    fseek(file, diskinfo->blocksize * zone, SEEK_SET);
-    result = fread(direct, sizeof(DIRECT), 1, file);
+    printf("%s:\n", argsp->path);
+    fseek(file, diskinfo->blocksize * node->zone[zoneCount], SEEK_SET);
 
-    while (*(direct->name)) {
-      if(direct->inode > 0) {
+    for(i = 0; i < node->size / sizeof(DIRECT); i++) {
+      fread(direct, sizeof(DIRECT), 1, file);
+
+      if(direct->inode) {
         getNode(tempNode, file, diskinfo, direct->inode);
-        printMode(tempNode->mode);
-        putchar(' ');
-        sprintf(size, "%d ", tempNode->size);
-        printf("%10s", size);
-        printf("%s \n", direct->name);         
+        printItem(tempNode, direct->name);
       }
-      fread(direct, sizeof(DIRECT), 1, file);      
+
+      /* check to see if we are at the end of a block and need to move to next zone*/
+      if(((i+1) * sizeof(DIRECT) % diskinfo->blocksize) == 0) {
+        if (zoneCount < 6) {
+          zoneCount++;
+          fseek(file, diskinfo->blocksize * node->zone[zoneCount], SEEK_SET);
+        } else {
+
+          /* jump to indirect block plus offset */
+          fseek(file, diskinfo->blocksize * node->zoneindirect + (sizeof(uint32_t) * indirectCount), SEEK_SET);
+          indirectCount++;
+
+          /* grab new zone id */
+          fread(&indirectNode, sizeof(uint32_t), 1, file);
+
+          /* set filepointer to new indirect zone/block */
+          fseek(file, diskinfo->blocksize * indirectNode, SEEK_SET);
+        }
+      }
+      
     }
+  } else {
+    printItem(node, argsp->path);
   }
     
   
-
-  /* get directory */  
-  /*
-  printf("size(INDOE): %d\n",sizeof(INODE));
-  printf("size(int): %d\n",sizeof(int));
-  printf("size(uint32_t): %d\n",sizeof(uint32_t));
-  */  
-  data = malloc(sizeof(int32_t));
-  //printf("pos: %lu   ", ftell(file));
-  //result = fread(data, 1, 4, file);
-  //printf("res: %d   data: %d\n", result, *data);  
-  for(i=0; i < 10; i++) {
-    *data = 0;
-    //printf("pos: %lu   ", ftell(file));
-    result = fread(data, sizeof(int32_t), 1, file);
-    //printf("res: %d   data: %s\n", result, data);  
-    //printf("res: %d   data: 0x%x\n", result, *data);  
-    //print_bits(*data);
-    break;
-  }
   
-  
-  fclose(file);
-
+  free(argsp);
   free(ibitmap);
   free(direct);
   free(node);
   free(diskinfo);
+  fclose(file);
+  
   return 0;
 }
 
@@ -190,13 +219,13 @@ void printNode(INODE *node)
   printf("  ctime:    %u\n", node->ctime);  
   printf("\n");
   printf("  Zones\n");
-  printf("\tzone[0]:     %u\n", node->zone0);  
-  printf("\tzone[1]:     %u\n", node->zone1);
-  printf("\tzone[2]:     %u\n", node->zone2);  
-  printf("\tzone[3]:     %u\n", node->zone3);  
-  printf("\tzone[4]:     %u\n", node->zone4);  
-  printf("\tzone[5]:     %u\n", node->zone5);  
-  printf("\tzone[6]:     %u\n", node->zone6);      
+  printf("\tzone[0]:     %u\n", node->zone[0]);  
+  printf("\tzone[1]:     %u\n", node->zone[1]);
+  printf("\tzone[2]:     %u\n", node->zone[2]);  
+  printf("\tzone[3]:     %u\n", node->zone[3]);  
+  printf("\tzone[4]:     %u\n", node->zone[4]);  
+  printf("\tzone[5]:     %u\n", node->zone[5]);  
+  printf("\tzone[6]:     %u\n", node->zone[6]);      
   printf("\tindirect:    %u\n", node->zoneindirect);      
   printf("\tdouble:      %u\n", node->zonedouble);
   
@@ -226,6 +255,15 @@ void printSuperBlock(SUPERBLOCK *disk)
   printf("  wrongended      %d\n", disk->wrongended);
 }
 
+void printItem(INODE *node, char *name)
+{  
+  printMode(node->mode);
+  putchar(' ');
+  printf("%9d ", node->size);
+  //printf("%4d ", direct->inode);
+  printf("%s\n", name);
+}
+
 
 void printMode(uint16_t mode) 
 {
@@ -241,9 +279,18 @@ void printMode(uint16_t mode)
   if(mode & 01) {putchar('x');} else {putchar('-');}    
 }
 
+void printUsage()
+{
+  printf("usage: given/minls  [ -v ] [ -p num [ -s num ] ] imagefile [ path ]\n");
+  printf("Options:");
+  printf("  -p	 part    --- select partition for filesystem (default: none)\n");
+  printf("  -s	 sub     --- select partition for filesystem (default: none)");
+  printf("  -h	 help    --- print usage information and exit");    
+  printf("  -v	 verbose --- increase verbosity level");
+}
+
 
 /**** Debug *****/
-
 void print_bits(uint32_t number){
    unsigned long mask = 1 << 31;
    int cnt = 1;
@@ -275,3 +322,28 @@ void print_bits(uint32_t number){
   fread(&(disk->blocksize), 1, 2, fp);
   fread(&(disk->subversion), 1, 2, fp);
   */
+  
+  
+    /* Inode bitmap */
+  /*
+  printf("iNode bitmap\n");
+  fseek(file, diskinfo->blocksize * 2, SEEK_SET);
+  fread(ibitmap, diskinfo->blocksize, 1, file);
+  for(i=0; i < 10; i++) {
+    print_bits(ibitmap[i]);
+  }  
+  printf("\n");
+  */
+
+
+  /* Zone bitmap */
+  /*
+  printf("Zone bitmap\n");  
+  fseek(file, diskinfo->blocksize * 3, SEEK_SET);
+  fread(zbitmap, diskinfo->blocksize, 1, file);
+  for(i=0; i < 10; i++) {
+    print_bits(zbitmap[i]);
+  }  
+  printf("\n");
+  */
+

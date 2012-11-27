@@ -1,0 +1,8 @@
+make clean
+make
+echo "-----------------------"
+echo "Compare: minls ~pn-cs453/Given/Asgn4/Images/$1 $2"
+echo "-----------------------"
+minls ~pn-cs453/Given/Asgn4/Images/$1 $2 > output/output1.out
+given/minls ~pn-cs453/Given/Asgn4/Images/$1 $2 > output/output2.out
+diff output/output1.out output/output2.out
