@@ -14,14 +14,18 @@
 #include <errno.h>
 
 #define FILEMASK		    0170000
-#define DIRECTORYMASK		040000
 #define REGULAR_MASK		0100000
+#define DIRECTORYMASK		040000
 #define MAGIC           0x4d5a
+#define REGULAR_ZONES   7
+#define SUPER_OFFSET    1024
+#define MAX_PATH_PARTS  100
 
 #define VALID_BYTE      510
 #define PART_TABLE_OFF  0x1BE
 #define MINIX_PART      0x81
 #define SECTOR_SIZE     512
+
 
 
 typedef struct ptable
@@ -64,7 +68,7 @@ typedef struct super_block
   /* computed */
   uint16_t firstIblock;
   uint32_t zonesize;
-  uint16_t ptrs_per_zone;
+  uint16_t ind_per_zone;
   uint16_t zones_per_block;   
   uint16_t ino_per_block;
   uint16_t wrongended;   
@@ -84,7 +88,7 @@ typedef struct inode
   uint32_t ctime;
 
   /* Zones */
-  uint32_t zone[7];
+  uint32_t zone[REGULAR_ZONES];
   uint32_t zoneindirect;
   uint32_t zonedouble;  
   uint32_t unused;  
@@ -105,17 +109,19 @@ typedef struct argsp
   char *image;
   char *path;
   char *dest;
-  char *pathParts[30];
+  char *pathParts[MAX_PATH_PARTS];
 } ARGSP;
 
 
 void getArgs(ARGSP *argsp, int argc, char *argv[]);
+void freeArgs(ARGSP *argsp);
 
 INODE* minInitialize(FILE *file, 
                      SUPERBLOCK *diskinfo, 
                      ARGSP *argsp,
-                     int *offset);
+                     int partitionOffset);
 
+int grabIndirect();
 void getSuperBlock(SUPERBLOCK *disk, 
                    FILE *fp);
 void getNode(INODE *node, 
@@ -123,6 +129,8 @@ void getNode(INODE *node,
              SUPERBLOCK *disk, 
              int number, 
              int partOffset); 
+
+
 
 void printSuperBlock(SUPERBLOCK *disk);
 void printNode(INODE *node);
@@ -135,6 +143,4 @@ void printPTable(PTABLES *ptable);
 int checkPTable(FILE *file, int offset);
 int getPartition(FILE *file, ARGSP *argsp);
 
-
-void print_bits(uint32_t number);
 #endif

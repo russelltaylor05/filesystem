@@ -1,0 +1,51 @@
+make clean
+make all
+
+
+echo "--- TestImage /Hello "
+minget ~pn-cs453/Given/Asgn4/Images/TestImage /Hello  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/TestImage /Hello  output/given1.out
+diff output/my1.out output/given1.out
+
+
+echo "--- Files /Files/0000_Zone "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0000_Zone  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0000_Zone  output/given1.out
+diff output/my1.out output/given1.out
+
+
+echo "--- Files /Files/0007_Zones "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0007_Zones  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0007_Zones  output/given1.out
+diff output/my1.out output/given1.out
+
+echo "--- Files /Files/0010_Zones "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0010_Zones  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Files/0010_Zones  output/given1.out
+diff output/my1.out output/given1.out
+
+echo "--- Files /Holes/direct "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/direct  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/direct  output/given1.out
+diff output/my1.out output/given1.out
+
+
+echo "--- Files /Files/1032_Zones "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Files/1032_Zones  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Files/1032_Zones  output/given1.out
+diff output/my1.out output/given1.out
+
+
+echo "--- Files /Holes/whole-indirect "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/whole-indirect  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/whole-indirect  output/given1.out
+diff output/my1.out output/given1.out
+
+
+echo "--- Files /Holes/double "
+minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/double  output/my1.out
+given/minget ~pn-cs453/Given/Asgn4/Images/Files /Holes/double  output/given1.out
+diff output/my1.out output/given1.out
+
+
+

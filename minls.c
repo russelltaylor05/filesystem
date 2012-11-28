@@ -15,8 +15,6 @@
 int main(int argc, char *argv[])
 {
   FILE * file;
-  uint32_t *ibitmap;
-  uint32_t *zbitmap;
   int i, indirectCount, indirectNode;
   int zoneCount = 0;
   int partitionOffset = 0;
@@ -32,28 +30,34 @@ int main(int argc, char *argv[])
   direct = malloc(sizeof(DIRECT));
   argsp = malloc(sizeof(ARGSP));
 
-  ibitmap = malloc(diskinfo->blocksize);
-  zbitmap = malloc(diskinfo->blocksize);
-
-  getArgs(argsp, argc, argv);
-
+  /* Grab Args */
+  getArgs(argsp, argc, argv);  
   if(argsp->hflag) {
     printUsage();
     exit(1);
   }
   
-  
-  //printf("argsp->image: %s\n",argsp->image);   
+  /* Open File */
   file = fopen(argsp->image, "r");
   if (file == NULL) {
     perror("Some Error:");
     exit (1);
   }
-  
-  node = minInitialize(file, diskinfo, argsp, &partitionOffset);
+
+  /* Grab Partition offset */
+  if((partitionOffset = getPartition(file, argsp)) < 0) {
+    fputs("Bad partition\n",stderr);
+    exit(1);
+  }  
+
+  /* Grab node for file */
+  if(!(node = minInitialize(file, diskinfo, argsp, partitionOffset))) {
+    fputs("File not found\n",stderr);
+    exit(1);
+  }
   
     
-  /* current node will be the matching diretory or file */
+  /* current node should be the matching diretory or file */
   if((node->mode & FILEMASK & DIRECTORYMASK)) {
 
     zoneCount = 0; 
@@ -74,7 +78,8 @@ int main(int argc, char *argv[])
       /* check to see if we are at the end of a zone 
          and need to move to next zone*/
       if(((i+1) * sizeof(DIRECT) % diskinfo->zonesize) == 0) {
-        if (zoneCount < 6) {
+
+        if (zoneCount < REGULAR_ZONES-1) {
           zoneCount++;
           fseek(file, partitionOffset + diskinfo->zonesize 
             * node->zone[zoneCount], SEEK_SET);
@@ -100,32 +105,14 @@ int main(int argc, char *argv[])
     printItem(node, argsp->path);
   }
       
-
+  freeArgs(argsp);
   free(argsp);
-  free(ibitmap);
   free(direct);
+  free(tempNode);
   free(node);
   free(diskinfo);
   fclose(file);
   
   exit(0);
 }
-
-
-  /*
-  fread(&(disk->ninodes), sizeof(uint32_t), 1, fp);
-  fseek(fp, 2, SEEK_CUR); // skip padding
-  fread(&(disk->i_blocks), 1, 2, fp);
-  fread(&(disk->z_blocks), 1, 2, fp);
-  fread(&(disk->firstdata), 1, 2, fp);
-  fread(&(disk->log_zone_size), 1, 2, fp);
-  fseek(fp, 2, SEEK_CUR); // skip padding  
-  fread(&(disk->max_file), sizeof(uint32_t), 1, fp);  
-  fread(&(disk->zones), sizeof(uint32_t), 1, fp);  
-  fread(&(disk->magic), 1, 2, fp);
-  fseek(fp, 2, SEEK_CUR); // skip padding  
-  fread(&(disk->blocksize), 1, 2, fp);
-  fread(&(disk->subversion), 1, 2, fp);
-  */
-  
 

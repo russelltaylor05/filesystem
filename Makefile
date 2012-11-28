@@ -21,7 +21,6 @@ minls: minls.o min.o libmin.a
 minget: minget.o min.o libmin.a
 	$(LD) $(LDFLAGS) -o minget minget.o -L. -lmin
 
-
 libmin.a: min.o
 	ar rcs libmin.a min.o
 
@@ -32,5 +31,5 @@ allclean: clean
 	@rm -f $(EXTRACLEAN)
 
 clean:	
-	rm -f  *.o *~ TAGS minls minget output/*.out
+	rm -f  *.o *~ TAGS minls minget output/*.out *.a
 

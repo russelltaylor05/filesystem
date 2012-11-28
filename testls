@@ -1,0 +1,6 @@
+make clean
+make
+echo "-----------------------"
+echo "Command: minls  ~pn-cs453/Given/Asgn4/Images/$1 $2"
+echo "-----------------------"
+minls -v ~pn-cs453/Given/Asgn4/Images/$1 $2

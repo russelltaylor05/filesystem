@@ -14,17 +14,17 @@
 
 
 /*
- * verfies disk image, checks partitions,
+ * verfies disk image and find node match
  * RETURNS: pointer to a matched iNode
+ * RETURNS: NULL if nothing found
  */
 INODE* minInitialize(FILE *file, 
                      SUPERBLOCK *diskinfo, 
                      ARGSP *argsp, 
-                     int *partitionOffset) 
+                     int partitionOffset) 
 {
   int i, j, partFound, indirectCount, indirectNode;
   int zoneCount = 0;
-  int offset = 0;
   
   INODE *node;
   DIRECT *direct;
@@ -32,13 +32,8 @@ INODE* minInitialize(FILE *file,
   node = malloc(sizeof(INODE));  
   direct = malloc(sizeof(DIRECT));
 
-  /* Grab Partition offset */
-  if((offset = getPartition(file, argsp)) < 0) {
-    exit(1);
-  }
-
   /* Super Block */
-  fseek(file, offset + 1024, SEEK_SET);  
+  fseek(file, partitionOffset + SUPER_OFFSET, SEEK_SET);  
   getSuperBlock(diskinfo, file);
   
   /* Check Magic Number */
@@ -49,7 +44,7 @@ INODE* minInitialize(FILE *file,
   }
   
   /* grab root/first node */
-  getNode(node, file, diskinfo, 1, offset);  
+  getNode(node, file, diskinfo, 1, partitionOffset);  
 
   /* Traverse pathParts */  
   for(i = 0; i < argsp->partsCount; i++) {
@@ -57,7 +52,7 @@ INODE* minInitialize(FILE *file,
     partFound = 0;
     indirectCount = 0;    
     zoneCount = 0; /* set back to zone[0] for new node */
-    fseek(file, offset + diskinfo->zonesize 
+    fseek(file, partitionOffset + diskinfo->zonesize 
       * node->zone[zoneCount], SEEK_SET);
     
     /* Here we look through each directory entry */
@@ -66,20 +61,20 @@ INODE* minInitialize(FILE *file,
   
       if(!strcmp(argsp->pathParts[i], direct->name) 
         && direct->inode != 0) {        
-        getNode(node, file, diskinfo, direct->inode, offset);
+        getNode(node, file, diskinfo, direct->inode, partitionOffset);
         partFound = 1;
       }
 
       /* check to see if we are at the end of a zone 
          and need to move to next zone*/
       if(((j+1) * sizeof(DIRECT) % diskinfo->zonesize) == 0) {
-        if (zoneCount < 6) {
+        if (zoneCount < REGULAR_ZONES-1) {
           zoneCount++;
-          fseek(file, offset + diskinfo->zonesize 
+          fseek(file, partitionOffset + diskinfo->zonesize 
                   * node->zone[zoneCount], SEEK_SET);
         } else {
           /* jump to indirect block plus offset */
-          fseek(file, offset 
+          fseek(file, partitionOffset 
                       + diskinfo->zonesize 
                       * node->zoneindirect + (sizeof(uint32_t) 
                       * indirectCount), SEEK_SET);
@@ -89,16 +84,15 @@ INODE* minInitialize(FILE *file,
           fread(&indirectNode, sizeof(uint32_t), 1, file);           
           
           /* set filepointer to new indirect zone */
-          fseek(file, offset + diskinfo->zonesize 
+          fseek(file, partitionOffset + diskinfo->zonesize 
             * indirectNode, SEEK_SET);
         }
       }
     }
 
-    /* if any part of path not found throw error */
+    /* if any part of path not found return NULL */
     if(!partFound) {
-      printf("%s: File not found.\n", argsp->path);
-      exit(1);
+      return NULL;
     } 
   }  
 
@@ -109,7 +103,6 @@ INODE* minInitialize(FILE *file,
     printf("\n");
   }  
 
-  *partitionOffset = offset;
   free(direct);
   return node;
 }
@@ -150,8 +143,33 @@ void getSuperBlock(SUPERBLOCK *disk, FILE *fp)
   disk->firstIblock = 2 + disk->i_blocks + disk->z_blocks;
   disk->ino_per_block = disk->blocksize / sizeof(INODE);
   disk->zones_per_block = disk->blocksize / disk->zonesize; 
+  disk->ind_per_zone = disk->zonesize / sizeof(uint32_t);
 }
 
+
+
+/* 
+ * Returns indirect Zone Id
+ */
+int grabIndirect(FILE *file, 
+                 int zoneSize,
+                 int partitionOffset,
+                 int startZone,
+                 int indirectCount) 
+{
+  int indirectZone;
+
+  /* jump to indirect block plus offset */
+  fseek(file, partitionOffset + 
+              zoneSize * startZone  + 
+              (sizeof(uint32_t) * indirectCount)
+              , SEEK_SET);
+  
+  /* grab new zone value */
+  fread(&indirectZone, sizeof(uint32_t), 1, file);
+
+  return indirectZone;
+}
 
 
 /**********************/
@@ -202,7 +220,7 @@ void printSuperBlock(SUPERBLOCK *disk)
   printf("Computed Fields:\n");
   printf("  firstIblock     %d\n", disk->firstIblock);
   printf("  zonesize        %d\n", disk->zonesize);
-  printf("  ptrs_per_zone   %d\n", disk->ptrs_per_zone);
+  printf("  ind_per_zone    %d\n", disk->ind_per_zone);
   printf("  ino_per_block   %d\n", disk->ino_per_block);
   printf("  wrongended      %d\n", disk->wrongended);
 }
@@ -321,6 +339,17 @@ void getArgs(ARGSP *argsp, int argc, char *argv[])
   }
   printf("\n");
   */
+}
+
+void freeArgs(ARGSP *argsp)
+{
+  int i;
+  
+  for(i = 0; i < MAX_PATH_PARTS; i++) {
+    if(argsp->pathParts[i]) {
+      free(argsp->pathParts[i]);
+    }
+  }
 }
 
 
