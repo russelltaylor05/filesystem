@@ -1,0 +1,6 @@
+make clean
+make all
+echo "-----------------------"
+echo "Command: given/minls -v ~pn-cs453/Given/Asgn4/Images/$1 $2"
+echo "-----------------------"
+given/minls -v ~pn-cs453/Given/Asgn4/Images/$1 $2

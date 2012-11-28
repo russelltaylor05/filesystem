@@ -1,0 +1,4 @@
+echo "-----------------------"
+echo "Command: given/minls -v ~pn-cs453/Given/Asgn4/Images/$1 $2"
+echo "-----------------------"
+given/minget  ~pn-cs453/Given/Asgn4/Images/$1 $2

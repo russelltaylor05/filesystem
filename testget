@@ -1,0 +1,6 @@
+make clean
+make all
+echo "-----------------------"
+echo "Command: minget  ~pn-cs453/Given/Asgn4/Images/$1 $2"
+echo "-----------------------"
+./minget ~pn-cs453/Given/Asgn4/Images/$1 $2

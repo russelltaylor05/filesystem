@@ -1,0 +1,88 @@
+make clean
+make
+
+echo "--- BigDirectories "
+minls ~pn-cs453/Given/Asgn4/Images/BigDirectories  > output/my1.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigDirectories  > output/given1.out
+diff output/my1.out output/given1.out
+
+echo "--- BigDirectories level1-000"
+minls ~pn-cs453/Given/Asgn4/Images/BigDirectories  level1-000 > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigDirectories  level1-000 > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigIndirectDirs"
+minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs  > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs  > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigIndirectDirs Level1"
+minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1 > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1 > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigIndirectDirs Level1/Level2"
+minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1/Level2 > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1/Level2 > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigIndirectDirs Level1/Level2/BigDir"
+minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1/Level2/BigDir > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigIndirectDirs Level1/Level2/BigDir > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigZones-16k"
+minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigZones-16k DirOne"
+minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k DirOne > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k DirOne > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BigZones-16k DirTwo"
+minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k DirTwo > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BigZones-16k DirTwo > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- ReallyBigZones-64k"
+minls ~pn-cs453/Given/Asgn4/Images/ReallyBigZones-64k > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/ReallyBigZones-64k > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- SmallBlocks--1k"
+minls ~pn-cs453/Given/Asgn4/Images/SmallBlocks--1k > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/SmallBlocks--1k > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- TestImage"
+minls ~pn-cs453/Given/Asgn4/Images/TestImage > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/TestImage > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- TestImage /"
+minls ~pn-cs453/Given/Asgn4/Images/TestImage / > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/TestImage / > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- TestImage src"
+minls ~pn-cs453/Given/Asgn4/Images/TestImage src > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/TestImage src > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- TestImage src/system"
+minls ~pn-cs453/Given/Asgn4/Images/TestImage src/system > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/TestImage src/system > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- TestImage Hello"
+minls ~pn-cs453/Given/Asgn4/Images/TestImage Hello > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/TestImage Hello > output/given2.out
+diff output/my2.out output/given2.out
+
+echo "--- BlankDisk"
+minls ~pn-cs453/Given/Asgn4/Images/BlankDisk > output/my2.out
+given/minls ~pn-cs453/Given/Asgn4/Images/BlankDisk > output/given2.out
+diff output/my2.out output/given2.out
+

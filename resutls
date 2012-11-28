@@ -1,0 +1,547 @@
+
+------------------------
+Looking for source files
+------------------------
+
+Found: min.c minget.c min.h minls.c
+
+--------------------------------
+Checking for long lines (no program should have any lines > 80 chars)
+(run ~pnico/bin/longlines.pl on your files to check.)
+--------------------------------
+
+Line length ok.
+
+Found: Makefile
+
+------------------------------------
+Building the application: "make all"
+------------------------------------
+
+make all
+make: Nothing to be done for `all'.
+
+---------------
+checking for executables
+---------------
+
+----------------------
+Testing verbose behavior
+----------------------
+minls -v Images/TestImage
+./minls -v /home/pn-cs453/Given/Asgn4/Images/TestImage
+Superblock Contents:
+Stored Fields:
+  ninodes:        768
+  i_blocks:       1
+  z_blocks:       1
+  firstdata:      16
+  log_zone_size:  0
+  max_file:       4294967295
+  magic:          0x4d5a
+  zones:          360
+  blocksize:      4096
+  subversion:     0
+Computed Fields:
+  firstIblock     4
+  zonesize        4096
+  ptrs_per_zone   0
+  ino_per_block   64
+  wrongended      0
+
+File inode:
+  mode:     0o40777
+  links:    3
+  uid:      2
+  gid:      2
+  size:     384
+  atime:    1141098157
+  mtime:    1141098157
+  ctime:    1141098157
+
+  Zones
+	zone[0]:     16
+	zone[1]:     0
+	zone[2]:     0
+	zone[3]:     0
+	zone[4]:     0
+	zone[5]:     0
+	zone[6]:     0
+	indirect:    0
+	double:      0
+
+/:
+drwxrwxrwx       384 .
+drwxrwxrwx       384 ..
+-rw-r--r--     73991 Other
+drwxr-xr-x      3200 src
+-rw-r--r--        11 Hello
+
+minls -v -p 0 Images/HardDisk
+./minls -v -p 0 /home/pn-cs453/Given/Asgn4/Images/HardDisk
+Floating exception (core dumped) 
+
+minls -v -p 0 -s 0 Images/HardDisk
+Partition Table:
+  first:    17
+  size:     95863
+  type:     0x81
+
+Sub Partition Table:
+  first:    18
+  size:     2880
+  type:     0x81
+
+Superblock Contents:
+Stored Fields:
+  ninodes:        768
+  i_blocks:       1
+  z_blocks:       1
+  firstdata:      16
+  log_zone_size:  0
+  max_file:       4294967295
+  magic:          0x4d5a
+  zones:          360
+  blocksize:      4096
+  subversion:     0
+Computed Fields:
+  firstIblock     4
+  zonesize        4096
+  ptrs_per_zone   0
+  ino_per_block   64
+  wrongended      0
+
+File inode:
+  mode:     0o40777
+  links:    10
+  uid:      2
+  gid:      2
+  size:     640
+  atime:    1141096963
+  mtime:    1141096883
+  ctime:    1141096883
+
+  Zones
+	zone[0]:     16
+	zone[1]:     0
+	zone[2]:     0
+	zone[3]:     0
+	zone[4]:     0
+	zone[5]:     0
+	zone[6]:     0
+	indirect:    0
+	double:      0
+
+/:
+drwxrwxrwx       640 .
+drwxrwxrwx       640 ..
+drwxr-xr-x       128 usr
+drwxr-xr-x       128 tmp
+drwxr-xr-x      2624 bin
+drwxr-xr-x      1472 etc
+drwxr-xr-x       768 sbin
+drwxr-xr-x     14144 dev
+drwxr-xr-x       192 lib
+drwxr-xr-x       256 boot
+
+
+------------------------
+Running the application 
+------------------------
+
+   =======================================================================
+  Test                                                          Status
+       Cmd: Prog Arguments                                
+   =======================================================================
+  1 -- Usage test                                                       ok.
+       Cmd: minls -h                                       
+  2 -- unparitioned, blank                                              ok.
+       Cmd: minls BlankDisk                                
+  3 -- unpartitioned, files                                             ok.
+       Cmd: minls TestImage                                
+  4 -- unpartitioned, bad superblock                                    ok.
+       Cmd: minls RandomDisk                               
+  5 -- partitioned, part 0                                              ok.
+       Cmd: minls -p 0 Partitioned                         
+  6 -- partitioned, part 1                                              ok.
+       Cmd: minls -p 1 Partitioned                         
+  7 -- partitioned, part 2                                              ok.
+       Cmd: minls -p 2 Partitioned                         
+  8 -- partitioned, part 3                                              ok.
+       Cmd: minls -p 3 Partitioned                         
+  9 -- partitioned, bad part                                            ok.
+       Cmd: minls -p 5 Partitioned                         
+ 10 -- partitioned, no part                                             ok.
+       Cmd: minls Partitioned                              
+ 11 -- partitioned, not minix                                           ok.
+       Cmd: minls -p 1 HardDisk                            
+ 12 -- subpart., good sub                                               ok.
+       Cmd: minls -p 0 -s 0 HardDisk                       
+ 13 -- subpart., bad sub                                                ok.
+       Cmd: minls -p 0 -s 1 HardDisk                       
+ 14 -- unpartitioned, w/filename                                        ok.
+       Cmd: minls TestImage /Hello                         
+ 15 -- partitioned, w/filename, p0                                      ok.
+       Cmd: minls -p 0 Partitioned /Message                
+ 16 -- partitioned, w/filename, p1                                      ok.
+       Cmd: minls -p 1 Partitioned /Message                
+ 17 -- partitioned, w/filename, p2                                      ok.
+       Cmd: minls -p 2 Partitioned /Message                
+ 18 -- partitioned, w/filename, p3                                      ok.
+       Cmd: minls -p 3 Partitioned /Message                
+ 19 -- subpart., no filename s0                                         ok.
+       Cmd: minls -p 0 -s 0 HardDisk                       
+ 20 -- subpart., no filename s2                                         ok.
+       Cmd: minls -p 0 -s 2 HardDisk                       
+ 21 -- subpart., w/filename                                             ok.
+       Cmd: minls -p 0 -s 2 HardDisk /home/pnico/Message   
+ 22 -- subpart., w/bad filename                                         ok.
+       Cmd: minls -p 0 -s 0 HardDisk /home/pnico/Message   
+ 23 -- directories                                                      ok.
+       Cmd: minls Files /Files                             
+ 24 -- directories                                                      ok.
+       Cmd: minls Files /Files/0000_Zones                  
+ 25 -- directories                                                      ok.
+       Cmd: minls Files /Files/0000_Zone                   
+ 26 -- directories                                                      ok.
+       Cmd: minls Files /Files/0007_Zones                  
+ 27 -- directories                                                      ok.
+       Cmd: minls Files /Files/0010_Zones                  
+ 28 -- directories                                                      ok.
+       Cmd: minls Files /Files/1032_Zones                  
+ 29 -- directories                                                      ok.
+       Cmd: minls Files /DeepPaths/a/b/c/d/e/i/j/k/Files   
+ 30 -- directories                                                      ok.
+       Cmd: minls Files /DeepPaths/a/b/c/d/e/i/j/k/Files/Message 
+ 31 -- multi-zone directory                                             ok.
+       Cmd: minls BigDirectories                           
+ 32 -- multi-zone directory (file)                                      ok.
+       Cmd: minls BigDirectories LastFile                  
+ 33 -- indirect directory                                               ok.
+       Cmd: minls BigIndirectDirs Level1/Level2            
+ 34 -- indirect directory (file)                                        ok.
+       Cmd: minls BigIndirectDirs Level1/Level2/LastFile   
+ 35 -- directories-deleted                                              ok.
+       Cmd: minls Files /Deleted                           
+ 36 -- directories-ok file                                              ok.
+       Cmd: minls Files /Deleted/File-10                   
+ 37 -- directories-deleted file                                         ok.
+       Cmd: minls Files /Deleted/File-05                   
+ 38 -- 1k blocks. dir.                                                  ok.
+       Cmd: minls SmallBlocks--1k                          
+ 39 -- 1k blocks. file.                                                 ok.
+       Cmd: minls SmallBlocks--1k DirTwo/FileTwo           
+ 40 -- 16k zones. dir.                                                  ok.
+       Cmd: minls BigZones-16k                             
+ 41 -- 16k zones. file.                                                 ok.
+       Cmd: minls BigZones-16k /DirOne/FileTwo             
+ 42 -- 64k zones. dir                                                   ok.
+       Cmd: minls ReallyBigZones-64k                       
+ 43 -- 64k zones. file                                                  ok.
+       Cmd: minls ReallyBigZones-64k DirTwo/FileOne        
+ 44 -- 64k zones. longpath                                              ok.
+       Cmd: minls ReallyBigZones-64k /./.././../DirTwo/FileOne 
+ 45 -- Permissions 777                                                  ok.
+       Cmd: minls Files /Permissions/777                   
+ 46 -- Permissions 755                                                  ok.
+       Cmd: minls Files /Permissions/755                   
+ 47 -- Permissions 753                                                  ok.
+       Cmd: minls Files /Permissions/753                   
+ 48 -- Permissions 357                                                  ok.
+       Cmd: minls Files /Permissions/357                   
+ 49 -- Permissions 000                                                  ok.
+       Cmd: minls Files /Permissions/000                   
+ 50 -- unpartitioned, w/filename                                        ok.
+       Cmd: minget TestImage /Hello                         
+ 51 -- partitioned, w/filename, p0                                      ok.
+       Cmd: minget -p 0 Partitioned /Message                
+ 52 -- partitioned, w/filename, p1                                      ok.
+       Cmd: minget -p 1 Partitioned /Message                
+ 53 -- partitioned, w/filename, p2                                      ok.
+       Cmd: minget -p 2 Partitioned /Message                
+ 54 -- partitioned, w/filename, p3                                      ok.
+       Cmd: minget -p 3 Partitioned /Message                
+ 55 -- subpart., no filename s0                                         ok.
+       Cmd: minget -p 0 -s 0 HardDisk                       
+ 56 -- subpart., no filename s2                                         ok.
+       Cmd: minget -p 0 -s 2 HardDisk                       
+ 57 -- subpart., w/filename                                             ok.
+       Cmd: minget -p 0 -s 2 HardDisk /home/pnico/Message   
+ 58 -- subpart., w/bad filename                                         ok.
+       Cmd: minget -p 0 -s 0 HardDisk /home/pnico/Message   
+ 59 -- unpartitioned, w/filename                                        ok.
+       Cmd: minget TestImage /Hello /dev/stdout             
+ 60 -- partitioned, w/filename, p0                                      ok.
+       Cmd: minget -p 0 Partitioned /Message /dev/stdout    
+ 61 -- partitioned, w/filename, p1                                      ok.
+       Cmd: minget -p 1 Partitioned /Message /dev/stdout    
+ 62 -- partitioned, w/filename, p2                                      ok.
+       Cmd: minget -p 2 Partitioned /Message /dev/stdout    
+ 63 -- partitioned, w/filename, p3                                      ok.
+       Cmd: minget -p 3 Partitioned /Message /dev/stdout    
+ 64 -- subpart., no filename s0                                         ok.
+       Cmd: minget -p 0 -s 0 HardDisk /dev/stdout           
+ 65 -- subpart., no filename s2                                         ok.
+       Cmd: minget -p 0 -s 2 HardDisk /dev/stdout           
+ 66 -- subpart., w/filename                                             ok.
+       Cmd: minget -p 0 -s 2 HardDisk /home/pnico/Message /dev/stdout 
+ 67 -- subpart., w/bad filename                                         ok.
+       Cmd: minget -p 0 -s 0 HardDisk /home/pnico/Message /dev/stdout 
+ 68 -- directories                                                      ok.
+       Cmd: minget Files /Files                             
+ 69 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/Distraction             
+ 70 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/a/b/c/d/e/i/j/k/Files   
+ 71 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/a/b/c/d/e/i/j/k/Files/Message 
+ 72 -- directories                                                      ok.
+       Cmd: minget Files /Files /dev/stdout                 
+ 73 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/Distraction /dev/stdout 
+ 74 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/a/b/c/d/e/i/j/k/Files /dev/stdout 
+ 75 -- directories                                                      ok.
+       Cmd: minget Files /DeepPaths/a/b/c/d/e/i/j/k/Files/Message /dev/stdout 
+ 76 -- multi-zone directory (file)                                      ok.
+       Cmd: minget BigDirectories LastFile                  
+ 77 -- multi-zone directory (file)                                      ok.
+       Cmd: minget BigDirectories LastFile /dev/stdout      
+ 78 -- indirect directory (file)                                        ok.
+       Cmd: minget BigIndirectDirs Level1/Level2/LastFile   
+ 79 -- indirect directory (file)                                        ok.
+       Cmd: minget BigIndirectDirs Level1/Level2/LastFile /dev/stdout 
+ 80 -- directories-deleted                                              ok.
+       Cmd: minget Files /Deleted                           
+ 81 -- directories-ok file                                              ok.
+       Cmd: minget Files /Deleted/File-10                   
+ 82 -- directories-deleted file                                         ok.
+       Cmd: minget Files /Deleted/File-05                   
+ 83 -- directories-deleted                                              ok.
+       Cmd: minget Files /Deleted /dev/stdout               
+ 84 -- directories-ok file                                              ok.
+       Cmd: minget Files /Deleted/File-10 /dev/stdout       
+ 85 -- directories-deleted file                                         ok.
+       Cmd: minget Files /Deleted/File-05 /dev/stdout       
+ 86 -- 1k blocks. dir.                                                  ok.
+       Cmd: minls SmallBlocks--1k                          
+ 87 -- 1k blocks. file.                                                 ok.
+       Cmd: minls SmallBlocks--1k DirTwo/FileTwo           
+ 88 -- 16k zones. dir.                                                  ok.
+       Cmd: minls BigZones-16k                             
+ 89 -- 16k zones. file.                                                 ok.
+       Cmd: minls BigZones-16k /DirOne/FileTwo             
+ 90 -- 64k zones. dir                                                   ok.
+       Cmd: minls ReallyBigZones-64k                       
+ 91 -- 64k zones. file                                                  ok.
+       Cmd: minls ReallyBigZones-64k DirTwo/FileOne        
+ 92 -- 64k zones. longpath                                              ok.
+       Cmd: minls ReallyBigZones-64k /./.././../DirTwo/FileOne 
+ 93 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0000_Zones                  
+ 94 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0000_Zone                   
+ 95 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0007_Zones                  
+ 96 -- Files size tests                                             FAILED.
+       Cmd: minget Files /Files/0010_Zones                  
+ 97 -- Files size tests                                             FAILED.
+       Cmd: minget Files /Files/1032_Zones                  
+ 98 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0000_Zones /dev/stdout      
+ 99 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0000_Zone /dev/stdout       
+100 -- Files size tests                                                 ok.
+       Cmd: minget Files /Files/0007_Zones /dev/stdout      
+101 -- Files size tests                                             FAILED.
+       Cmd: minget Files /Files/0010_Zones /dev/stdout      
+102 -- Files size tests                                             FAILED.
+       Cmd: minget Files /Files/1032_Zones /dev/stdout      
+103 -- Reading files with holes                                         ok.
+       Cmd: minget Files /Holes/nohole         /dev/stdout  
+104 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/direct         /dev/stdout  
+105 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/into-indirect  /dev/stdout  
+106 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/whole-indirect /dev/stdout  
+107 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/double         /dev/stdout  
+108 -- Reading files with holes                                         ok.
+       Cmd: minget Files /Holes/nohole                      
+109 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/direct                      
+110 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/into-indirect               
+111 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/whole-indirect              
+112 -- Reading files with holes                                     FAILED.
+       Cmd: minget Files /Holes/double                      
+   =======================================================================
+Failure. (100/112 passed)
+
+Actual ouput from tests and detailed results are below.
+
+
+
+-----------------
+96) Files size tests:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Files/0010_Zones 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+-4M-bM-))EM-cM-SKM-^@^HM-^\M-sM- yM-C#M-CbM-{M-^W{^BM-d${^M-N8yM-;M-CM-^?M-j1R^DM-ZM-^DJM-3JM-b,_rM-^\^Yp^]M-RNM-vM-^PM-bM-^T\FKM-_;3#GM-^XPM- M-}`M-^FM-rM-4^LM-FM-^NM-!M-^Z^[RM-aM-y^EM-U7M-3M-L^RIM-QM-:M-^Y>aM-hM-{M-sM-^R\^AM-|M-*^?M-QM-/M-XZM-nbTM-3aM-cYErM-IM-_M-BD^N^TdM-e;M-^RqM-!4M-ta^GM-^L]ZdM-3iM-^Yb5B>M-Ht^RM-!X`M-~M-kM-=MM&U)M-^@6uM-VtZM-<:M-^UU^NM-DDVM-^EM-V)^^@M-VM-K^Y0?M-_sHM-3w^?M-^M^QM-j^UnTb<M-AwM-^PM-yM-RM-FM-o^AM-$^WM-->:?M-,M-^PM-1M-GM-=M-%M-[M-&M-AM-{M-LM-3<M-6i^M-&	OM-^CM-"M-SM-xM-Y^\M-R:OM->M-3l0D.KM-BDM-LM-Gh^L*)^_M-lM-sM-:0"3^QUYM-"M-,G*M-TM-]e^DM-e?M-^GM-.M-T^XM-Z^GM-;M-iM-tM-oM-^Hu]^OM-fM-^K M-^\M-^CM-iM-^JM-k|M-^NAiM-_M-^RM-^NM-8^FM-^VM-dM-]l>HM-auM-c{TNM-iM-uM-s_^ZAM-zwM-^@^RM-mM-8;GM-FM-7M-^X6M-%M-^W}^Q^NvJ^C^^F^VLM-Iy>?M-MM-K^HM-~M-^RM-dsM-^GM-^OM-^V#M-D-M-1M-(^SM-^RM- C,^F^]M-+1^DM-9M-^_M-TM-^Ov/@M-GM-r{r",tM-^IM-\M-pM-MM-0M-;bM-=M-w^@Jzc^WM-q@M-zM-U^VM-~M-^GM-^[M-|^NM-^JN^LfV^OM-^MM-kvM-SR!M-GMzM-OM->M-gM-GM-t^\^BlwM-=[M-vM-OM-9M-2M-^_+M-=M-KM-uM-^PM-T^E)jNM-QM-^M-at1M-^\ZqM-FM-(M-(M-^WC^XM-I~M-yM-^PM-lM-^GM-I^AM-QXM-7M-.eM-&M->^A^^M-6:^@J^\M-OM-?M-qM-^MM-^Qu^KM-B*^NM-^VgM-xM-^YM-^?"M-^H^EM-^HM-XAM-L!ZM-jM-^MS>M-QM--Xs'9M-Jzz g^>M-g,gJt^GWp^BxM-!M-v0F(^YM-@\M-SBcM-ooM-&nlQ=M-+M-^S^M-NM-^RM-w\M-_?M- HM-#yM-tM-OM-R?M-'M-k3^SAM-[M-^MM-PrM-;M-+^Th^RM-T`M-^__wM-fM-^JM-l^^S^X;M-}q}M-%M-^QM-^[M-R(^HRM-iO^_D^MM-^E7M-\EbiM-^@^OM-NM-nM-FM-T2M-^K*"O^CM-^Cq^^]D^PVM-^C}M-cM-^ErM-!M-^_M-^BM-GM-^_M-^?M-mM-^SM-xETFNM-^['vM-1M-^GM-^^M-Z2.M-(M-rM-EM-_M- M-i^WRM-^MM-'M-L`M-^HM-hM-Nr6M-^MM-9^Z^F/n8um^^EL	M-yM-jM-b.M-@M-KM-s^RE)M-^Qf]M-rN^GB^KM->TM-\O^KM-{{M-<M-.UWUM-m^Q^\kM-^KM-0M-H!M--M-~M-UM-(M-^]WM-MP;/M-^F[M-^K^HM-q^K\RM-^Z^]M-^HM-lM-M^M-6[^WM-^V\M-SM-4-f	M-yM-)^TM-.M-fM-lM-hM-^Blh%uM-0M-^T^PM-;^@M- ^QM-hM-^GbM-jM--^U,M-^M-"pM-^wM-LM-h1+ ^?M-IDM-$@M-@=M-gmM--.M--M-YM-^NM-*&M-#9M-^VM-^P^AM-yM-t^DM-4M-~M-cvTM-`T^\M-kEM-='^RM-^?M-8^FM-JM-^JpM-^Y.=M-T&KM-z 7M-^M9-M-aM-^PM-,M-RM-aM-hM-^M-^HM-^Es^^Q/4.M-^SM-eM-^Ay^LXQ0M-{cM-^SM-^FRM^_^UM-\[cM-,M-{M-k^AM-^^M-jM-}3+M-xG<AM-^GM-[M-<M-@xM-|M-^N{M-)^M
+M-L^BM-iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/96 and testminfs.26866 differ
+
+
+-----------------
+97) Files size tests:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Files/1032_Zones 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+LM-^B1N,^OM-gM-\M-^V^@M-^^?M-^K^EM-X M-a^[M-"]C^C|RM-UQM-)M-mM-7^WM-^AIoM-*>M-^VmM->^[M-@cM-X.@;M-umlgM-l^_M-^TM-=M-^[M-mM-!SM-=$:M-xM-*M-^?M-%M-67Ln9M-AM-^[^Y96j.yM-^TM-4M-H^SM-^KgM-^G+M-UdM-^^M-r^PM-d6=;`bM-^PM-{M-^ILcM-^O.M-iuM-1jM-^J"M-ITM-^IM-Q^U@M-JM-nM-3M-\M-^?GQ^R^OM-Oqu*M-hk"J#M-2M-^BM-JY^QM-;7WJM-^PM-;M-%M-iM-^OM-^T{M-.M-WzN[JM-{^GM-c2v6x^VrM-^M-#9RM-r:^CM-2M-_ZqVM-c9h{?M-&M-_M-^MM-<M-t7M-^\S^KM-vB^FM-^K^^M-YM-^GgM-^KM-|M-aM-<^MM-^F^DJM- qM-e~lAM-^AM-Q/^RM-wM-^jM-sM- X%^D^AM-0k^ZM-sM-&xTM-MVM-/&M-+'^V@_/q%^RM-MM-GM-C^N5LM-IM-5M-K^AM->M-sM-^U^TkM-ZM-@M-gM-^^M-?^BM-2,V^DVM-3M-w^QM-^Q^W^ZM-I"wlM-^_TM-`M--M-^TXM-^^ZM-^JM-tM-^OjM-^V^QM-^EcM-LM-B^UM-C\^RM-tM-!M-JM-2M-LM-^\M-^QKM-jM-3^?M-^JM-gr	^StI\^_<^M
+M-\`M-JTM-n+$b^SM-^C'M-^@yM-^OM-gM-^HM-^F^UM-<M-x^MM-4M-^?gxXM--}$M-o38^PmgM-bM-^ZM-.M-&M-&M-/pM-^@M-^@M-^J^Ts^M-^AM-4P^MzRM-p>M-wM-^U^GyM-c^QM-XM-(^A	jvM-?M-/pM-~M-^@7)M-^C~M-Y^R\M-^UM-/M-#bM-wM-^QM-`M-^DM-(M-=M-^_"SM-~CM-|M-EM-^IM-7.M-jM--`M-^[M-^XM-^DM-(M-^FM-OM-BZ^PM-~^?M-^RM-tSQIM-2M-^T^_^[M-~TM-W$@|M-^GM-^^^lM-<M-^F^NM-[5M-^\M-RFM-NuM-;M-eM-2M-(M-&M-^?M-UM-^Y&wZ(M-^P^FM-uM-*eM-!M-$^UM-9M-^[N6]M->B^E@=^TM-{M-}M-LM-{M-7hM-DM-TM-^F^NM-r^QM-:M-YM-FpM-]WG|M-KM-^W#M-`TjM-cM-3EhM-^YM-BM-t}M-6M-^T6^HM-^O,M-^Uj|M-W^R5M-)M-:M-TsM-NM-^HM-e1^_M-VM-eM-/M-\M-rvM-YM-/M-?\(M-^Mi^@zM-^]M-n^[OnM-miM-WM-uM-^K^XM-pkM-^H|\^X:	M-6=L^QM-c^M
+M-YM-^D>M-^ M-pvIM-d^]L^?>M-(M-XM-g#XvM-N{M-#^SM-nwM-^O9_M-@M-\M-!M-^\6TM-kM-qM-.M-#5^ZM-$lM-^?M-^H^N42M-)^T^H~=|	l^DM-iM-^KM-o\DM-?M-.M-v|M-Z~M-/pbM-B^HM->JM-*[M-g$M-^JH@M-j^LM-hM-(1^X_M-e M-m3D)M-]~M-^KVF`^OM-JM-&68M-zM-^GM-kyM-^QMM-^\M-dM-YM-{M-: 78EmM-|M-^JM-6@M-[M-JA#c/m,^HM-:^FM->M-I9^ZM-]@M-* M-.M-t	M-^CM-^_M-^U0&M-x	^KM-EzM-J3cM-j07M-a^D^Ffq^L@M-&M-)M-[M-XM-!^^LM-4M-^GM-^L&M-yM-!M-^TM-1M-^GM-@M-B^_^KZ]{^M
+D{M-,M-dM-^ZM-YM-a^AhM-c]@M-/^D:YhM-^JgM-*M-XmM-0M-VJ^ZM-cM-&M-^GM-^\ M-wM-5^:M-{M-1M-hB^TOM-bt^DM-mKM-Ic3M-!SM-^LM-kK^PM-~XS*IM-'FM-y,M-wdM-ZzM-wM-^^eeQyM-PMM-jM-LM-vM-^\M-^JUM-pmLM-^MM-^HM-^KM-|aM-^]TM-SM-'$^H^LM-)$M-LH	cM-$^G+b3^F7M-klM-;M-(DZ^UWM-*fM-^TQK(M-^YM-^]M-3M-^^Ve^T^Biolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/97 and testminfs.26866 differ
+
+
+-----------------
+101) Files size tests:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Files/0010_Zones /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+-4M-bM-))EM-cM-SKM-^@^HM-^\M-sM- yM-C#M-CbM-{M-^W{^BM-d${^M-N8yM-;M-CM-^?M-j1R^DM-ZM-^DJM-3JM-b,_rM-^\^Yp^]M-RNM-vM-^PM-bM-^T\FKM-_;3#GM-^XPM- M-}`M-^FM-rM-4^LM-FM-^NM-!M-^Z^[RM-aM-y^EM-U7M-3M-L^RIM-QM-:M-^Y>aM-hM-{M-sM-^R\^AM-|M-*^?M-QM-/M-XZM-nbTM-3aM-cYErM-IM-_M-BD^N^TdM-e;M-^RqM-!4M-ta^GM-^L]ZdM-3iM-^Yb5B>M-Ht^RM-!X`M-~M-kM-=MM&U)M-^@6uM-VtZM-<:M-^UU^NM-DDVM-^EM-V)^^@M-VM-K^Y0?M-_sHM-3w^?M-^M^QM-j^UnTb<M-AwM-^PM-yM-RM-FM-o^AM-$^WM-->:?M-,M-^PM-1M-GM-=M-%M-[M-&M-AM-{M-LM-3<M-6i^M-&	OM-^CM-"M-SM-xM-Y^\M-R:OM->M-3l0D.KM-BDM-LM-Gh^L*)^_M-lM-sM-:0"3^QUYM-"M-,G*M-TM-]e^DM-e?M-^GM-.M-T^XM-Z^GM-;M-iM-tM-oM-^Hu]^OM-fM-^K M-^\M-^CM-iM-^JM-k|M-^NAiM-_M-^RM-^NM-8^FM-^VM-dM-]l>HM-auM-c{TNM-iM-uM-s_^ZAM-zwM-^@^RM-mM-8;GM-FM-7M-^X6M-%M-^W}^Q^NvJ^C^^F^VLM-Iy>?M-MM-K^HM-~M-^RM-dsM-^GM-^OM-^V#M-D-M-1M-(^SM-^RM- C,^F^]M-+1^DM-9M-^_M-TM-^Ov/@M-GM-r{r",tM-^IM-\M-pM-MM-0M-;bM-=M-w^@Jzc^WM-q@M-zM-U^VM-~M-^GM-^[M-|^NM-^JN^LfV^OM-^MM-kvM-SR!M-GMzM-OM->M-gM-GM-t^\^BlwM-=[M-vM-OM-9M-2M-^_+M-=M-KM-uM-^PM-T^E)jNM-QM-^M-at1M-^\ZqM-FM-(M-(M-^WC^XM-I~M-yM-^PM-lM-^GM-I^AM-QXM-7M-.eM-&M->^A^^M-6:^@J^\M-OM-?M-qM-^MM-^Qu^KM-B*^NM-^VgM-xM-^YM-^?"M-^H^EM-^HM-XAM-L!ZM-jM-^MS>M-QM--Xs'9M-Jzz g^>M-g,gJt^GWp^BxM-!M-v0F(^YM-@\M-SBcM-ooM-&nlQ=M-+M-^S^M-NM-^RM-w\M-_?M- HM-#yM-tM-OM-R?M-'M-k3^SAM-[M-^MM-PrM-;M-+^Th^RM-T`M-^__wM-fM-^JM-l^^S^X;M-}q}M-%M-^QM-^[M-R(^HRM-iO^_D^MM-^E7M-\EbiM-^@^OM-NM-nM-FM-T2M-^K*"O^CM-^Cq^^]D^PVM-^C}M-cM-^ErM-!M-^_M-^BM-GM-^_M-^?M-mM-^SM-xETFNM-^['vM-1M-^GM-^^M-Z2.M-(M-rM-EM-_M- M-i^WRM-^MM-'M-L`M-^HM-hM-Nr6M-^MM-9^Z^F/n8um^^EL	M-yM-jM-b.M-@M-KM-s^RE)M-^Qf]M-rN^GB^KM->TM-\O^KM-{{M-<M-.UWUM-m^Q^\kM-^KM-0M-H!M--M-~M-UM-(M-^]WM-MP;/M-^F[M-^K^HM-q^K\RM-^Z^]M-^HM-lM-M^M-6[^WM-^V\M-SM-4-f	M-yM-)^TM-.M-fM-lM-hM-^Blh%uM-0M-^T^PM-;^@M- ^QM-hM-^GbM-jM--^U,M-^M-"pM-^wM-LM-h1+ ^?M-IDM-$@M-@=M-gmM--.M--M-YM-^NM-*&M-#9M-^VM-^P^AM-yM-t^DM-4M-~M-cvTM-`T^\M-kEM-='^RM-^?M-8^FM-JM-^JpM-^Y.=M-T&KM-z 7M-^M9-M-aM-^PM-,M-RM-aM-hM-^M-^HM-^Es^^Q/4.M-^SM-eM-^Ay^LXQ0M-{cM-^SM-^FRM^_^UM-\[cM-,M-{M-k^AM-^^M-jM-}3+M-xG<AM-^GM-[M-<M-@xM-|M-^N{M-)^M
+M-L^BM-iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/101 and testminfs.26866 differ
+
+
+-----------------
+102) Files size tests:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Files/1032_Zones /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+LM-^B1N,^OM-gM-\M-^V^@M-^^?M-^K^EM-X M-a^[M-"]C^C|RM-UQM-)M-mM-7^WM-^AIoM-*>M-^VmM->^[M-@cM-X.@;M-umlgM-l^_M-^TM-=M-^[M-mM-!SM-=$:M-xM-*M-^?M-%M-67Ln9M-AM-^[^Y96j.yM-^TM-4M-H^SM-^KgM-^G+M-UdM-^^M-r^PM-d6=;`bM-^PM-{M-^ILcM-^O.M-iuM-1jM-^J"M-ITM-^IM-Q^U@M-JM-nM-3M-\M-^?GQ^R^OM-Oqu*M-hk"J#M-2M-^BM-JY^QM-;7WJM-^PM-;M-%M-iM-^OM-^T{M-.M-WzN[JM-{^GM-c2v6x^VrM-^M-#9RM-r:^CM-2M-_ZqVM-c9h{?M-&M-_M-^MM-<M-t7M-^\S^KM-vB^FM-^K^^M-YM-^GgM-^KM-|M-aM-<^MM-^F^DJM- qM-e~lAM-^AM-Q/^RM-wM-^jM-sM- X%^D^AM-0k^ZM-sM-&xTM-MVM-/&M-+'^V@_/q%^RM-MM-GM-C^N5LM-IM-5M-K^AM->M-sM-^U^TkM-ZM-@M-gM-^^M-?^BM-2,V^DVM-3M-w^QM-^Q^W^ZM-I"wlM-^_TM-`M--M-^TXM-^^ZM-^JM-tM-^OjM-^V^QM-^EcM-LM-B^UM-C\^RM-tM-!M-JM-2M-LM-^\M-^QKM-jM-3^?M-^JM-gr	^StI\^_<^M
+M-\`M-JTM-n+$b^SM-^C'M-^@yM-^OM-gM-^HM-^F^UM-<M-x^MM-4M-^?gxXM--}$M-o38^PmgM-bM-^ZM-.M-&M-&M-/pM-^@M-^@M-^J^Ts^M-^AM-4P^MzRM-p>M-wM-^U^GyM-c^QM-XM-(^A	jvM-?M-/pM-~M-^@7)M-^C~M-Y^R\M-^UM-/M-#bM-wM-^QM-`M-^DM-(M-=M-^_"SM-~CM-|M-EM-^IM-7.M-jM--`M-^[M-^XM-^DM-(M-^FM-OM-BZ^PM-~^?M-^RM-tSQIM-2M-^T^_^[M-~TM-W$@|M-^GM-^^^lM-<M-^F^NM-[5M-^\M-RFM-NuM-;M-eM-2M-(M-&M-^?M-UM-^Y&wZ(M-^P^FM-uM-*eM-!M-$^UM-9M-^[N6]M->B^E@=^TM-{M-}M-LM-{M-7hM-DM-TM-^F^NM-r^QM-:M-YM-FpM-]WG|M-KM-^W#M-`TjM-cM-3EhM-^YM-BM-t}M-6M-^T6^HM-^O,M-^Uj|M-W^R5M-)M-:M-TsM-NM-^HM-e1^_M-VM-eM-/M-\M-rvM-YM-/M-?\(M-^Mi^@zM-^]M-n^[OnM-miM-WM-uM-^K^XM-pkM-^H|\^X:	M-6=L^QM-c^M
+M-YM-^D>M-^ M-pvIM-d^]L^?>M-(M-XM-g#XvM-N{M-#^SM-nwM-^O9_M-@M-\M-!M-^\6TM-kM-qM-.M-#5^ZM-$lM-^?M-^H^N42M-)^T^H~=|	l^DM-iM-^KM-o\DM-?M-.M-v|M-Z~M-/pbM-B^HM->JM-*[M-g$M-^JH@M-j^LM-hM-(1^X_M-e M-m3D)M-]~M-^KVF`^OM-JM-&68M-zM-^GM-kyM-^QMM-^\M-dM-YM-{M-: 78EmM-|M-^JM-6@M-[M-JA#c/m,^HM-:^FM->M-I9^ZM-]@M-* M-.M-t	M-^CM-^_M-^U0&M-x	^KM-EzM-J3cM-j07M-a^D^Ffq^L@M-&M-)M-[M-XM-!^^LM-4M-^GM-^L&M-yM-!M-^TM-1M-^GM-@M-B^_^KZ]{^M
+D{M-,M-dM-^ZM-YM-a^AhM-c]@M-/^D:YhM-^JgM-*M-XmM-0M-VJ^ZM-cM-&M-^GM-^\ M-wM-5^:M-{M-1M-hB^TOM-bt^DM-mKM-Ic3M-!SM-^LM-kK^PM-~XS*IM-'FM-y,M-wdM-ZzM-wM-^^eeQyM-PMM-jM-LM-vM-^\M-^JUM-pmLM-^MM-^HM-^KM-|aM-^]TM-SM-'$^H^LM-)$M-LH	cM-$^G+b3^F7M-klM-;M-(DZ^UWM-*fM-^TQK(M-^YM-^]M-3M-^^Ve^T^Biolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/102 and testminfs.26866 differ
+
+
+-----------------
+104) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/direct         /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/104 and testminfs.26866 differ
+
+
+-----------------
+105) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/into-indirect  /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/105 and testminfs.26866 differ
+
+
+-----------------
+106) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/whole-indirect /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/106 and testminfs.26866 differ
+
+
+-----------------
+107) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/double         /dev/stdout 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/107 and testminfs.26866 differ
+
+
+-----------------
+109) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/direct 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/109 and testminfs.26866 differ
+
+
+-----------------
+110) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/into-indirect 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/110 and testminfs.26866 differ
+
+
+-----------------
+111) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/whole-indirect 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/111 and testminfs.26866 differ
+
+
+-----------------
+112) Reading files with holes:
+     minget /home/pn-cs453/Given/Asgn4/Images/Files /Holes/double 
+-----------------
+Test program output:
+ --- Output limited to 10 lines. (There would be too much.) ---
+Before the hole.^M
+^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^iolimit: output character limit (2048) exceeded.
+Diffs: ( < Reference > Testfile ):
+ --- Output limited to 10 lines. (There would be too much.) ---
+Binary files /home/pn-cs453/Given/Asgn4/Expected/112 and testminfs.26866 differ
+FAILED.
+
+

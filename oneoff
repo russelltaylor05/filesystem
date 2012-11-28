@@ -1,0 +1,10 @@
+make clean
+make all
+echo "-------------------------------------------------------"
+echo "minls -v -p 0 -s 1 ~pn-cs453/Given/Asgn4/Images/HardDisk"
+echo "-------------------------------------------------------"
+
+given/minls -p 0 /home/pn-cs453/Given/Asgn4/Images/Partitioned 
+echo "--------------"
+echo "--------------"
+./minls -p 0 /home/pn-cs453/Given/Asgn4/Images/Partitioned 
